@@ -36,5 +36,9 @@ jobs:
           git config user.name "radar-bot"
           git config user.email "radar-bot@users.noreply.github.com"
           git add data/radar.db
-          git diff --cached --quiet || git commit -m "Atualiza itens vistos"
+          # Sem mudança no banco, não há o que enviar.
+          git diff --cached --quiet && exit 0
+          git commit -m "Atualiza itens vistos"
+          # Se alguém enviou commits durante a execução, encaixa o nosso por cima.
+          git pull --rebase
           git push
