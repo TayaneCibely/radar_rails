@@ -1,0 +1,17 @@
+name: editais
+
+# Preencha com a página de "processo seletivo" de cada programa que te interessa.
+# Cada link novo nessa página que passar no filtro gera um aviso.
+#
+# sources:
+#   - type: page_watch
+#     name: ppg-exemplo
+#     url: https://www.exemplo.br/ppg/processo-seletivo
+#     selector: "main a[href]"   # opcional: restringe a uma área da página
+sources: []
+
+filter:
+  all_of:
+    - [edital, selecao, processo seletivo, inscricao, inscricoes]
+  # Exemplo: none_of: [doutorado, resultado]
+  none_of: []

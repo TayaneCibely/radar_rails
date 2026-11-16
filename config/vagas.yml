@@ -1,0 +1,49 @@
+name: vagas
+
+sources:
+  - type: github_issues
+    repo: backend-br/vagas
+
+  - type: github_issues
+    repo: frontendbr/vagas
+
+  # Página de vagas Rails do Programathor: cada cartão de vaga é um link.
+  - type: page_watch
+    name: programathor
+    url: https://programathor.com.br/jobs-ruby-on-rails
+    selector: ".cell-list a[href]"
+
+  - type: rss
+    name: weworkremotely-backend
+    url: https://weworkremotely.com/categories/remote-back-end-programming-jobs.rss
+
+  - type: rss
+    name: weworkremotely-fullstack
+    url: https://weworkremotely.com/categories/remote-full-stack-programming-jobs.rss
+
+  # RemoteOK e Remotive pedem, nos termos da API, link de volta e menção à origem:
+  # o aviso leva o link original. Não republique essas vagas em outros sites.
+  - type: json_api
+    name: remoteok
+    url: https://remoteok.com/api?tag=ruby
+    # Sem "tags": as etiquetas da RemoteOK são automáticas e pouco confiáveis.
+    fields: { key: id, title: [position, company], url: url, body: description }
+
+  - type: json_api
+    name: remotive
+    url: https://remotive.com/api/remote-jobs?search=rails
+    items: jobs
+    fields: { key: id, title: [title, company_name], url: url, body: description, tags: tags }
+
+filter:
+  # Cada linha é um grupo: precisa aparecer pelo menos um termo de cada grupo.
+  # Escreva sem acento; a comparação ignora acentos e maiúsculas.
+  # A tecnologia pode estar em qualquer lugar do anúncio.
+  all_of:
+    - [ruby, rails]
+  # O nível precisa estar no título ou nas etiquetas: no corpo, "junior" aparece
+  # em anúncios de qualquer nível.
+  headline_all_of:
+    - [junior, jr, estagio, estagiario, trainee, entry level]
+  # Elimina o item se aparecer no título.
+  none_of: [senior, sr, especialista, staff]

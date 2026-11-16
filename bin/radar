@@ -1,0 +1,4 @@
+#!/usr/bin/env ruby
+require_relative "../lib/radar"
+
+exit Radar::CLI.run(ARGV)

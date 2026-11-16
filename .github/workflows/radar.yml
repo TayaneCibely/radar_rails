@@ -1,0 +1,40 @@
+name: radar
+
+on:
+  schedule:
+    - cron: "0 11,17,22 * * *" # 08h, 14h e 19h no horário de Brasília
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency: radar
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+          bundler-cache: true
+
+      - name: Rodar os bots
+        run: bundle exec ruby bin/radar all
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          GITHUB_TOKEN: ${{ github.token }}
+
+      # O banco volta para o repositório: é assim que o bot lembra o que já avisou.
+      - name: Salvar itens vistos
+        if: always()
+        run: |
+          [ -f data/radar.db ] || exit 0
+          git config user.name "radar-bot"
+          git config user.email "radar-bot@users.noreply.github.com"
+          git add data/radar.db
+          git diff --cached --quiet || git commit -m "Atualiza itens vistos"
+          git push
